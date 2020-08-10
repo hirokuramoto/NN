@@ -23,4 +23,6 @@ if __name__ == '__main__':
     img = img.reshape(28, 28)
     print(img.shape)
 
+    print(x_train.shape)
+
     img_show(img)
