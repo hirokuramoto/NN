@@ -34,6 +34,7 @@ def predict(network, x):
 if __name__ == '__main__':
     x, t = get_data()
     network = init_network()
+    print(network)
 
     batch_size = 100
     accuracy_cnt = 0
