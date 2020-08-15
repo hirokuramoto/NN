@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 import numpy as np
 
-from functions import *
+from layers import *
 from gradient import numerical_gradient
 
 class TwoLayerNet(object):
@@ -32,6 +32,12 @@ class TwoLayerNet(object):
 
 
     def predict(self, x):
+        '''認識（推論）の実行
+        input:
+            x(np.array) : 画像データ
+        output:
+            x(np.array) : スコア（出力層への入力値）
+        '''
         for layer in self.layers.values():
             x = layer.forward(x)
 
@@ -40,34 +46,42 @@ class TwoLayerNet(object):
 
     def loss(self, x, t):
         '''損失関数の計算
-        input
-            x : 入力データ
-            t : 教師データ
+        input:
+            x(np.array) : スコア
+            t(np.array) : 教師データ
+        output:
+            np.array : Softmax-with-Lossレイヤからの出力（確率値）
         '''
         y = self.predict(x)
 
-        return cross_entropy_error(y, t)
+        return self.lastLayer.forward(y, t)
 
 
     def accuracy(self, x, t):
         '''認識精度の計算
-        input
-            x : 入力データ
-            t : 教師データ
+        input:
+            x(np.array) : 画像データ
+            t(np.array) : 教師データ
+        output:
+            accuracy(float) : 認識精度
         '''
         y = self.predict(x)
-        y = np.argmax(y, axis=1) # axis=1で行ごとの最大値の列番号インデックスを返す
-        t = np.argmax(t, axis=1)
+        y = np.argmax(y, axis=1) # axis=1で行ごとに最大値の列番号インデックスを返す
 
-        accuracy = np.sum(y == t) / float(x.shape[0])
+        if t.ndim != 1:
+            t = np.argmax(t, axis=1)
+
+        accuracy = np.sum(y == t) / float(x.shape[0]) # 最大値のインデックス番号同士を比較
         return accuracy
 
 
     def numerical_gradient(self, x, t):
-        '''認識精度の計算
-        input
-            x : 入力データ
-            t : 教師データ
+        '''重みパラメータに対する勾配を数値微分によって求める
+        input:
+            x(np.array) : 画像データ
+            t(np.array) : 教師データ
+        output:
+            grads(dict) : 重みパラメータ
         '''
         loss_W = lambda W: self.loss(x, t)
 
@@ -76,6 +90,35 @@ class TwoLayerNet(object):
         grads['W2'] = numerical_gradient(loss_W, self.params['W2'])
         grads['b1'] = numerical_gradient(loss_W, self.params['b1'])
         grads['b2'] = numerical_gradient(loss_W, self.params['b2'])
+
+        return grads
+
+
+    def gradient(self, x, t):
+        ''' 重みパラメータに対する勾配を誤差逆伝播法によって求める
+        input :
+            x(np.array) :
+            t(np.array) :
+        output :
+            grads(dict) : 重みパラメータ
+        '''
+        # forward
+        self.loss(x, t)
+
+        # backward
+        dout = 1
+        dout = self.lastLayer.backward(dout)
+        layers = list(self.layers.values()) # layers(dict型)の値の一覧をlist化
+        layers.reverse()    # reverse()メソッド : listを逆順に並べ替え
+        for layer in layers:
+            dout = layer.backward(dout)
+
+        # 設定
+        grads = {}
+        grads['W1'] = self.layers['Affine1'].dW
+        grads['b1'] = self.layers['Affine1'].db
+        grads['W2'] = self.layers['Affine2'].dW
+        grads['b2'] = self.layers['Affine2'].db
 
         return grads
 

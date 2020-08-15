@@ -1,5 +1,7 @@
 import numpy as np
 
+from functions import *
+
 class Relu(object):
     '''Reluレイヤ
         順伝播時の入力が
@@ -54,6 +56,8 @@ class Affine(object):
         self.W = W
         self.b = b
         self.x = None
+
+        # 重み・バイアスパラメータの微分
         self.dW = None
         self.db = None
 
@@ -80,7 +84,7 @@ class SoftmaxWithLoss(object):
         self.t = None # 教師データ(one-hot vector)
 
 
-    def forward(self, x, t)
+    def forward(self, x, t):
         self.t = t
         self.y = softmax(x)
         self.loss = cross_entropy_error(self.y, self.t)
