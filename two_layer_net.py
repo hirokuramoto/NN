@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import numpy as np
 
 from functions import *
@@ -6,7 +8,7 @@ from gradient import numerical_gradient
 class TwoLayerNet(object):
     '''2層のニューラルネット
     input
-        input_size : 入力層のニューロンの数
+        input_size  : 入力層のニューロンの数
         hidden_size : 隠れ層のニューロンの数
         output_size : 出力層のニューロンの数
     '''
@@ -20,17 +22,20 @@ class TwoLayerNet(object):
         self.params['b1'] = np.zeros(hidden_size)
         self.params['b2'] = np.zeros(output_size)
 
+        # レイヤの生成
+        self.layers = OrderedDict()
+        self.layers['Affine1'] = Affine(self.params['W1'], self.params['b1'])
+        self.layers['Relu1']   = Relu()
+        self.layers['Affine2'] = Affine(self.params['W2'], self.params['b2'])
+
+        self.lastLayer = SoftmaxWithLoss()
+
 
     def predict(self, x):
-        W1, W2 = self.params['W1'], self.params['W2']
-        b1, b2 = self.params['b1'], self.params['b2']
+        for layer in self.layers.values():
+            x = layer.forward(x)
 
-        a1 = np.dot(x, W1) + b1
-        z1 = sigmoid(a1)
-        a2 = np.dot(z1, W2) + b2
-        y  = softmax(a2)
-
-        return y
+        return x
 
 
     def loss(self, x, t):
@@ -57,6 +62,7 @@ class TwoLayerNet(object):
         accuracy = np.sum(y == t) / float(x.shape[0])
         return accuracy
 
+
     def numerical_gradient(self, x, t):
         '''認識精度の計算
         input
@@ -72,6 +78,7 @@ class TwoLayerNet(object):
         grads['b2'] = numerical_gradient(loss_W, self.params['b2'])
 
         return grads
+
 
 if __name__ == '__main__':
     test = TwoLayerNet(784, 100, 10)
