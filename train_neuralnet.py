@@ -6,6 +6,7 @@ from tqdm import tqdm
 
 from mnist import load_mnist
 from two_layer_net import TwoLayerNet
+from optimizer import SGD, Momentum, AdaGrad, Adam, RMSprop
 
 
 def main():
@@ -27,6 +28,7 @@ def main():
     iter_per_epoch  = max(train_size / batch_size, 1)
 
     network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
+    optimizer = RMSprop()
 
     for i in tqdm(range(iters_num)):
         # ミニバッチの取得
@@ -39,8 +41,10 @@ def main():
         grad = network.gradient(x_batch, t_batch)
 
         # パラメータの更新
-        for key in ('W1', 'b1', 'W2', 'b2'):
-            network.params[key] -= learning_rate * grad[key]
+        #for key in ('W1', 'b1', 'W2', 'b2'):
+        #    network.params[key] -= learning_rate * grad[key]
+
+        optimizer.update(network.params, grad)
 
         # 学習経過の記録
         loss = network.loss(x_batch, t_batch)
@@ -63,7 +67,7 @@ def main():
     ax = fig.add_subplot(1, 1, 1)
     ax.set_xlabel(r'count')
     ax.set_ylabel(r'loss')
-    ax.scatter(count, train_loss_list, s=10, c='blue', edgecolors='blue', linewidths=1, marker='o', alpha=0.5)
+    ax.scatter(count, train_loss_list, s=10, c='blue', edgecolors='pink', linewidths=1, marker='o', alpha=0.5)
     plt.show()
 
 if __name__ == "__main__":
