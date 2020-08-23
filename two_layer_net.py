@@ -27,8 +27,8 @@ class TwoLayerNet(object):
         self.layers['Relu1']   = Relu()
         self.layers['Affine2'] = Affine(self.params['W2'], self.params['b2'])
 
-        self.lastLayer = SoftmaxWithLoss()
-
+        #self.lastLayer = SoftmaxWithLoss()
+        self.lastLayer = IdentityWithLoss()
 
     def predict(self, x):
         '''認識（推論）の実行
@@ -49,7 +49,7 @@ class TwoLayerNet(object):
             x(np.array) : スコア
             t(np.array) : 教師データ
         output:
-            np.array : Softmax-with-Lossレイヤからの出力（確率値）
+            np.array : 出力層からの出力（確率値）
         '''
         y = self.predict(x)
 
@@ -65,12 +65,13 @@ class TwoLayerNet(object):
             accuracy(float) : 認識精度
         '''
         y = self.predict(x)
-        y = np.argmax(y, axis=1) # axis=1で行ごとに最大値の列番号インデックスを返す
+        #y = np.argmax(y, axis=1) # axis=1で行ごとに最大値の列番号インデックスを返す
 
         if t.ndim != 1:
             t = np.argmax(t, axis=1)
 
-        accuracy = np.sum(y == t) / float(x.shape[0]) # 最大値のインデックス番号同士を比較
+        #accuracy = np.sum(y == t) / float(x.shape[0]) # 最大値のインデックス番号同士を比較
+        accuracy = np.sum(y-t < 10) / float(x.shape[0])
         return accuracy
 
 
