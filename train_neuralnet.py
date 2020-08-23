@@ -26,7 +26,7 @@ def main():
     # ハイパーパラメータ
     iters_num = 10000
     train_size = x_train.shape[0]
-    batch_size = 50
+    batch_size = 20
     learning_rate =0.1
 
     train_loss_list = []
@@ -35,7 +35,7 @@ def main():
     iter_per_epoch  = max(train_size / batch_size, 1)
 
     network = TwoLayerNet(input_size=2, hidden_size=50, output_size=1)
-    optimizer = RMSprop()
+    optimizer = Adam()
 
     for i in tqdm(range(iters_num)):
         # ミニバッチの取得
@@ -44,8 +44,8 @@ def main():
         t_batch = t_train[batch_mask]
 
         # 勾配の計算
-        grad = network.numerical_gradient(x_batch, t_batch)
-        #grad = network.gradient(x_batch, t_batch)
+        #grad = network.numerical_gradient(x_batch, t_batch)
+        grad = network.gradient(x_batch, t_batch)
 
         # パラメータの更新
         #for key in ('W1', 'b1', 'W2', 'b2'):

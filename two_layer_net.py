@@ -33,7 +33,7 @@ class TwoLayerNet(object):
     def predict(self, x):
         '''認識（推論）の実行
         input:
-            x(np.array) : 画像データ
+            x(np.array) : 入力データ
         output:
             x(np.array) : スコア（出力層への入力値）
         '''
@@ -49,7 +49,7 @@ class TwoLayerNet(object):
             x(np.array) : スコア
             t(np.array) : 教師データ
         output:
-            np.array : 出力層からの出力（確率値）
+            np.array : 出力層からの出力
         '''
         y = self.predict(x)
 
@@ -57,12 +57,12 @@ class TwoLayerNet(object):
 
 
     def accuracy(self, x, t):
-        '''認識精度の計算
+        '''精度の計算
         input:
-            x(np.array) : 画像データ
+            x(np.array) : 入力データ
             t(np.array) : 教師データ
         output:
-            accuracy(float) : 認識精度
+            accuracy(float) : 精度
         '''
         y = self.predict(x)
         #y = np.argmax(y, axis=1) # axis=1で行ごとに最大値の列番号インデックスを返す
@@ -71,7 +71,7 @@ class TwoLayerNet(object):
             t = np.argmax(t, axis=1)
 
         #accuracy = np.sum(y == t) / float(x.shape[0]) # 最大値のインデックス番号同士を比較
-        accuracy = np.sum(y-t < 10) / float(x.shape[0])
+        accuracy = np.sum((y-t)**2)
         return accuracy
 
 
@@ -97,8 +97,8 @@ class TwoLayerNet(object):
     def gradient(self, x, t):
         ''' 重みパラメータに対する勾配を誤差逆伝播法によって求める
         input :
-            x(np.array) :
-            t(np.array) :
+            x(np.array) : 入力データ
+            t(np.array) : 教師データ
         output :
             grads(dict) : 重みパラメータ
         '''
@@ -128,4 +128,5 @@ if __name__ == '__main__':
     x = np.random.rand(100, 784)
     t = np.random.rand(100, 10)
 
-    print(test.accuracy(x, t))
+    print(test.gradient(x, t))
+    print(test.gradient(x, t).shape)

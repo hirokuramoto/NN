@@ -53,27 +53,31 @@ class Affine(object):
     '''Affine(行列積)レイヤ
     '''
     def __init__(self, W, b):
-        self.W = W
+        self.W =W
         self.b = b
-        self.x = None
 
+        self.x = None
+        self.original_x_shape = None
         # 重み・バイアスパラメータの微分
         self.dW = None
         self.db = None
 
-
     def forward(self, x):
-        self.x = x  # 値を保持
-        out = np.dot(x, self.W) + self.b
+        # テンソル対応
+        self.original_x_shape = x.shape
+        x = x.reshape(x.shape[0], -1)
+        self.x = x
+
+        out = np.dot(self.x, self.W) + self.b
 
         return out
-
 
     def backward(self, dout):
         dx = np.dot(dout, self.W.T)
         self.dW = np.dot(self.x.T, dout)
         self.db = np.sum(dout, axis=0)
 
+        dx = dx.reshape(*self.original_x_shape)  # 入力データの形状に戻す（テンソル対応）
         return dx
 
 
@@ -123,7 +127,12 @@ class IdentityWithLoss(object):
 
     def backward(self, dout=1):
         batch_size = self.t.shape[0]
+        #if self.t.size == self.y.size: # 教師データがone-hot-vectorの場合
         dx = (self.y - self.t) / batch_size
+        #else:
+        #    dx = self.y.copy()
+        #    dx[np.arange(batch_size), self.t] -= 1
+        #    dx = dx / batch_size
 
         return dx
 
@@ -228,10 +237,14 @@ class BatchNormalization(object):
         return dx
 
 if __name__ == '__main__':
-    x = np.array([[1.0, -0.5], [-2.0, 3.0]])
-    mask = (x <= 0)
-    out = x.copy()
-    print(mask)
-    print(out)
-    out[mask] = 0
-    print(out)
+    import pandas as pd
+
+    data = pd.read_csv('Rosenbrock.csv', header = 0) # header = 0でヘッダー行を読み飛ばし
+    x_train = np.array(data.iloc[0:100,   0:2])
+    t_train = np.array(data.iloc[0:20,   2])
+    x_test  = np.array(data.iloc[100:120, 0:2])
+    t_test  = np.array(data.iloc[100:120, 2])
+
+    test = IdentityWithLoss()
+    test.forward(t_train, t_test)
+    print(test.backward())
