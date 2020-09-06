@@ -23,7 +23,7 @@ def softmax(x):
 
 
 def sum_squared_error(y, t):
-    # データが1つ＝１次元配列の場合
+    # データが１次元配列の場合(バッチ処理ではない場合)に２次元配列に変換
     if y.ndim == 1:
         t = t.reshape(1, t.size)
         y = y.reshape(1, y.size)

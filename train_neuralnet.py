@@ -69,6 +69,7 @@ def main():
     t2 = time.time()
     elapsed_time = t2 - t1
     print("elapsed_time=", elapsed_time)
+    print(network.predict(np.array([[1.0, 1.0]])))
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)

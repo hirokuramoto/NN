@@ -53,7 +53,7 @@ class Affine(object):
     '''Affine(行列積)レイヤ
     '''
     def __init__(self, W, b):
-        self.W =W
+        self.W = W
         self.b = b
 
         self.x = None
@@ -126,13 +126,10 @@ class IdentityWithLoss(object):
         return self.loss
 
     def backward(self, dout=1):
-        batch_size = self.t.shape[0]
-        #if self.t.size == self.y.size: # 教師データがone-hot-vectorの場合
-        dx = (self.y - self.t) / batch_size
-        #else:
-        #    dx = self.y.copy()
-        #    dx[np.arange(batch_size), self.t] -= 1
-        #    dx = dx / batch_size
+        batch_size = self.y.shape[0]
+        dx = self.y.copy()
+        dx[np.arange(batch_size), self.t] -= 1
+        dx = dx / batch_size
 
         return dx
 
