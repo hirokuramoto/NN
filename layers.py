@@ -127,9 +127,7 @@ class IdentityWithLoss(object):
 
     def backward(self, dout=1):
         batch_size = self.y.shape[0]
-        dx = self.y.copy()
-        dx[np.arange(batch_size), self.t] -= 1
-        dx = dx / batch_size
+        dx = (self.y - self.t) / batch_size
 
         return dx
 

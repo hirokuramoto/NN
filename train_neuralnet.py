@@ -5,7 +5,8 @@ import time
 
 from tqdm import tqdm
 
-from mnist import load_mnist
+#from mnist import load_mnist
+from load_data import load_data
 from two_layer_net import TwoLayerNet
 from optimizer import SGD, Momentum, AdaGrad, Adam, RMSprop
 
@@ -15,26 +16,27 @@ def main():
 
     #(x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
 
-    data = pd.read_csv('Rosenbrock.csv', header = 0) # header = 0でヘッダー行を読み飛ばし
-    x_train = np.array(data.iloc[0:100,   0:2])
-    t_train = np.array(data.iloc[0:100,   2])
-    x_test  = np.array(data.iloc[100:120, 0:2])
-    t_test  = np.array(data.iloc[100:120, 2])
+    # データの読み込み
+    filename = 'Rosenbrock.csv'
+    train_size = 100
+    test_size  = 20
+    design     = 2
+    object     = 1
+    (x_train, t_train), (x_test, t_test) = load_data(filename, train_size, test_size, design, object, normalize=False)
 
     count = np.array([], dtype = np.int)
 
     # ハイパーパラメータ
     iters_num = 10000
-    train_size = x_train.shape[0]
     batch_size = 20
-    learning_rate =0.1
+    learning_rate = 0.1
 
     train_loss_list = []
     train_acc_list  = []
     test_acc_list   = []
     iter_per_epoch  = max(train_size / batch_size, 1)
 
-    network = TwoLayerNet(input_size=2, hidden_size=50, output_size=1)
+    network = TwoLayerNet(input_size=2, hidden_size=100, output_size=1)
     optimizer = Adam()
 
     for i in tqdm(range(iters_num)):
@@ -63,12 +65,12 @@ def main():
             test_acc = network.accuracy(x_test, t_test)
             train_acc_list.append(train_acc)
             test_acc_list.append(test_acc)
-            print(train_acc, test_acc)
 
     # 計算結果の表示
     t2 = time.time()
     elapsed_time = t2 - t1
     print("elapsed_time=", elapsed_time)
+    print(train_acc, test_acc)
     print(network.predict(np.array([[1.0, 1.0]])))
 
     fig = plt.figure()
