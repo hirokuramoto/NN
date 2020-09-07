@@ -8,6 +8,7 @@ from tqdm import tqdm
 #from mnist import load_mnist
 from load_data import load_data
 from two_layer_net import TwoLayerNet
+from five_layer_net import FiveLayerNet
 from optimizer import SGD, Momentum, AdaGrad, Adam, RMSprop
 
 
@@ -36,7 +37,7 @@ def main():
     test_acc_list   = []
     iter_per_epoch  = max(train_size / batch_size, 1)
 
-    network = TwoLayerNet(input_size=2, hidden_size=100, output_size=1)
+    network = FiveLayerNet(input_size=2, hidden_1_size=100, hidden_2_size=100, hidden_3_size=100, output_size=1)
     optimizer = Adam()
 
     for i in tqdm(range(iters_num)):
