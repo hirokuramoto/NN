@@ -19,8 +19,8 @@ def main():
 
     # データの読み込み
     filename = 'Rosenbrock.csv'
-    train_size = 100
-    test_size  = 20
+    train_size = 1800
+    test_size  = 200
     design     = 2
     object     = 1
     (x_train, t_train), (x_test, t_test) = load_data(filename, train_size, test_size, design, object, normalize=False)
@@ -30,14 +30,16 @@ def main():
     # ハイパーパラメータ
     iters_num = 10000
     batch_size = 20
-    learning_rate = 0.1
+    learning_rate = 0.01
 
     train_loss_list = []
     train_acc_list  = []
     test_acc_list   = []
     iter_per_epoch  = max(train_size / batch_size, 1)
 
-    network = FiveLayerNet(input_size=2, hidden_1_size=100, hidden_2_size=100, hidden_3_size=100, output_size=1)
+    network = FiveLayerNet(input_size=2, hidden_1_size=10, hidden_2_size=10, hidden_3_size=10, output_size=1)
+    #network = TwoLayerNet(input_size=2, hidden_size=50, output_size=1)
+
     optimizer = Adam()
 
     for i in tqdm(range(iters_num)):
