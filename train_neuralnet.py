@@ -19,8 +19,8 @@ def main():
 
     # データの読み込み
     filename = 'Rosenbrock.csv'
-    train_size = 1800
-    test_size  = 200
+    train_size = 160
+    test_size  = 40
     design     = 2
     object     = 1
     (x_train, t_train), (x_test, t_test) = load_data(filename, train_size, test_size, design, object, normalize=False)
@@ -29,7 +29,7 @@ def main():
 
     # ハイパーパラメータ
     iters_num = 10000
-    batch_size = 20
+    batch_size = 40
     learning_rate = 0.01
 
     train_loss_list = []
