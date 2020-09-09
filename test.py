@@ -1,18 +1,9 @@
 import numpy as np
 from load_data import load_data
 
+X = np.array([1.0, 0.5])
+W1 = np.array([[0.1, 0.3, 0.5], [0.2, 0.4, 0.6]])
+B1 = np.array([0.1, 0.2, 0.3])
 
-filename = 'Rosenbrock.csv'
-train_size = 100
-test_size  = 20
-design     = 2
-object     = 1
-(x_train, t_train), (x_test, t_test) = load_data(filename, train_size, test_size, design, object, normalize=False)
-
-print(x_train[0:5])
-print(x_train.mean(axis=0))
-print(x_train.std(axis=0))
-mean = x_train.mean(axis=0)
-std  = x_train.std(axis=0)
-x_train = (x_train - mean) / std
-print(x_train[0:5])
+A1 = np.dot(X, W1) + B1
+print(A1)

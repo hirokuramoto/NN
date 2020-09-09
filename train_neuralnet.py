@@ -28,7 +28,7 @@ def main():
     count = np.array([], dtype = np.int)
 
     # ハイパーパラメータ
-    iters_num = 10000
+    iters_num = 100000
     batch_size = 40
     learning_rate = 0.01
 
@@ -37,7 +37,7 @@ def main():
     test_acc_list   = []
     iter_per_epoch  = max(train_size / batch_size, 1)
 
-    network = FiveLayerNet(input_size=2, hidden_1_size=10, hidden_2_size=10, hidden_3_size=10, output_size=1)
+    network = FiveLayerNet(input_size=2, hidden_1_size=5, hidden_2_size=5, hidden_3_size=5, output_size=1)
     #network = TwoLayerNet(input_size=2, hidden_size=50, output_size=1)
 
     optimizer = Adam()
