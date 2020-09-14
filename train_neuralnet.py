@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 import time
+import pickle
+
 
 from tqdm import tqdm
 
@@ -9,6 +11,7 @@ from tqdm import tqdm
 from load_data import load_data
 from two_layer_net import TwoLayerNet
 from five_layer_net import FiveLayerNet
+from multi_layer_net_extend import MultiLayerNetExtend
 from optimizer import SGD, Momentum, AdaGrad, Adam, RMSprop
 
 
@@ -19,8 +22,8 @@ def main():
 
     # データの読み込み
     filename = 'Rosenbrock.csv'
-    train_size = 160
-    test_size  = 40
+    train_size = 1000
+    test_size  = 200
     design     = 2
     object     = 1
     (x_train, t_train), (x_test, t_test) = load_data(filename, train_size, test_size, design, object, normalize=False)
@@ -28,17 +31,20 @@ def main():
     count = np.array([], dtype = np.int)
 
     # ハイパーパラメータ
-    iters_num = 100000
-    batch_size = 40
-    learning_rate = 0.01
+    iters_num = 10000
+    batch_size = 200
+    learning_rate = 0.1
 
     train_loss_list = []
     train_acc_list  = []
     test_acc_list   = []
     iter_per_epoch  = max(train_size / batch_size, 1)
 
-    network = FiveLayerNet(input_size=2, hidden_1_size=5, hidden_2_size=5, hidden_3_size=5, output_size=1)
+    #network = FiveLayerNet(input_size=2, hidden_1_size=5, hidden_2_size=5, hidden_3_size=5, output_size=1)
     #network = TwoLayerNet(input_size=2, hidden_size=50, output_size=1)
+    network = MultiLayerNetExtend(input_size=2, hidden_size_list=[10, 20, 10], output_size=1,
+                 activation='relu', weight_init_std='relu', weight_decay_lambda=0.0001,
+                 use_dropout = False, dropout_ration = 0.5, use_batchnorm=False)
 
     optimizer = Adam()
 
@@ -75,6 +81,10 @@ def main():
     print("elapsed_time=", elapsed_time)
     print(train_acc, test_acc)
     print(network.predict(np.array([[1.0, 1.0]])))
+
+    # 訓練したニューラルネットワークを保存
+    with open('neuralnet.pkl', 'wb') as f:
+        pickle.dump(network, f, -1)
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
