@@ -32,7 +32,7 @@ def main():
 
     # ハイパーパラメータ
     iters_num = 10000
-    batch_size = 200
+    batch_size = 100
     learning_rate = 0.1
 
     train_loss_list = []
@@ -42,8 +42,8 @@ def main():
 
     #network = FiveLayerNet(input_size=2, hidden_1_size=5, hidden_2_size=5, hidden_3_size=5, output_size=1)
     #network = TwoLayerNet(input_size=2, hidden_size=50, output_size=1)
-    network = MultiLayerNetExtend(input_size=2, hidden_size_list=[10, 20, 10], output_size=1,
-                 activation='relu', weight_init_std='relu', weight_decay_lambda=0.0001,
+    network = MultiLayerNetExtend(input_size=2, hidden_size_list=[3, 3, 3], output_size=1,
+                 activation='relu', weight_init_std='relu', weight_decay_lambda=0.001,
                  use_dropout = False, dropout_ration = 0.5, use_batchnorm=False)
 
     optimizer = Adam()
